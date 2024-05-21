@@ -5,22 +5,22 @@ import {axiosInstance} from "@/lib/axios";
 type Author = {
     id: number,
     name: string;
+    books: Book[];
 }
 
 type Book = {
     id: string,
-    authors: Author[];
     title: string;
     description: string;
     ISBN: string;
 };
 
 export default function Authors() {
-    const [books, setBooks] = useState<Book[]>([]);
+    const [authors, setAuthors] = useState<Author[]>([]);
 
     useEffect(() => {
-        axiosInstance.get('/books').then((response) => {
-            setBooks(response.data);
+        axiosInstance.get('/authors').then((response) => {
+            setAuthors(response.data);
         })
             .catch((error) => {
                 console.error('Error fetching posts:', error);
@@ -29,12 +29,12 @@ export default function Authors() {
 
     return (
         <main className="flex min-h-screen flex-col items-left justify-between p-24">
-            {books.map((book) => (
-                <ul key={book.id}>
-                    <li>Название книги:{book.title}</li>
-                    <li>Описание книги: {book.description}</li>
-                    <li>ISBN книги: {book.ISBN}</li>
-                    <li>Авторы книги: {book.authors.map((author) => (author.name))}</li>
+            {authors.map((author) => (
+                <ul key={author.id}>
+                    <li>Название автора: {author.name}</li>
+                    <li>Книги автора: {author.books.map((book) => (<ul key={book.id}>
+                        <li>{book.title}</li>
+                    </ul>))}</li>
                 </ul>
             ))}
         </main>

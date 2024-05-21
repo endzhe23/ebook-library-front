@@ -34,7 +34,9 @@ export default function Books() {
                     <li>Название книги:{book.title}</li>
                     <li>Описание книги: {book.description}</li>
                     <li>ISBN книги: {book.ISBN}</li>
-                    <li>Авторы книги: {book.authors.map((author) => (author.name))}</li>
+                    <li>Авторы книги: {book.authors.map((author) => (<ul key={author.id}>
+                        <li>{author.name}</li>
+                    </ul>))}</li>
                 </ul>
             ))}
         </main>
