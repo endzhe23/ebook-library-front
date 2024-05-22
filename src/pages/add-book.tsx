@@ -13,8 +13,8 @@ import {Toaster} from "@/components/ui/sonner";
 
 
 const BookShema = z.object({
-    authorIds: z.array(z.number()).min(2).max(50),
-    title: z.string(),
+    authorIds: z.array(z.number()),
+    title: z.string().min(2).max(50),
     description: z.string(),
     ISBN: z.string()
 })
