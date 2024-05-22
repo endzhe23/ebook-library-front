@@ -23,7 +23,7 @@ export default function Books() {
     const form = useForm<z.infer<typeof BookShema>>({
         resolver: zodResolver(BookShema),
         defaultValues: {
-            authorIds: [],
+            authorIds: [1],
             title: "",
             description: "",
             ISBN: ""
@@ -54,6 +54,14 @@ export default function Books() {
                             <FormDescription>
                                 Название книги должно быть от 2 до 50 символов
                             </FormDescription>
+                            <FormLabel>Описание книги</FormLabel>
+                            <FormControl>
+                                <Input placeholder="Напишите здесь описание книги"/>
+                            </FormControl>
+                            <FormLabel>ISBN книги</FormLabel>
+                            <FormControl>
+                                <Input placeholder="Напишите здесь ISBN книги"/>
+                            </FormControl>
                         </FormItem>
                     )}
                     />
