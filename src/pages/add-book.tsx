@@ -54,13 +54,23 @@ export default function Books() {
                             <FormDescription>
                                 Название книги должно быть от 2 до 50 символов
                             </FormDescription>
+                        </FormItem>
+                    )}
+                    />
+                    <FormField control={form.control} name="description" render={({field}) => (
+                        <FormItem>
                             <FormLabel>Описание книги</FormLabel>
                             <FormControl>
-                                <Input placeholder="Напишите здесь описание книги"/>
+                                <Input placeholder="Напишите здесь описание книги" {...field}/>
                             </FormControl>
+                        </FormItem>
+                    )}
+                    />
+                    <FormField control={form.control} name="ISBN" render={({field}) => (
+                        <FormItem>
                             <FormLabel>ISBN книги</FormLabel>
                             <FormControl>
-                                <Input placeholder="Напишите здесь ISBN книги"/>
+                                <Input placeholder="Напишите здесь ISBN книги" {...field}/>
                             </FormControl>
                         </FormItem>
                     )}
