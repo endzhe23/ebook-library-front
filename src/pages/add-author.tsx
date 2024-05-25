@@ -12,20 +12,20 @@ import {toast} from "sonner";
 import {Toaster} from "@/components/ui/sonner";
 
 
-const AuthorShema = z.object({
+const AuthorScheme = z.object({
     name: z.string().min(2).max(50),
     bookIds: z.array(z.number())
 })
 
 export default function Authors() {
-    const form = useForm<z.infer<typeof AuthorShema>>({
-        resolver: zodResolver(AuthorShema),
+    const form = useForm<z.infer<typeof AuthorScheme>>({
+        resolver: zodResolver(AuthorScheme),
         defaultValues: {
             name: "",
             bookIds: []
         }
     })
-    const onSubmit = (formData: z.infer<typeof AuthorShema>) => {
+    const onSubmit = (formData: z.infer<typeof AuthorScheme>) => {
         console.log(formData)
         axiosInstance.post("/authors/add", {...formData})
             .then(() => toast("Author created successfully", {

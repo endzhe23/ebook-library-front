@@ -9,25 +9,23 @@ import React, {useEffect, useState} from "react";
 import {Button} from "@/components/ui/button";
 import {axiosInstance} from "@/lib/axios";
 import {toast, Toaster} from "sonner";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import {DropdownCombobox, ListItem} from "@/components/ui/dropdown-combobox";
 
 type Author = {
     id: number,
     name: string
 }
 
-const BookShema = z.object({
-    // authorIds: z.array(z.number()) - так должно быть, но пока костыль
-    authorId: z.string({
-        required_error: "Пожалуйста, выберите автора.",
-    }),
-    title: z.string().min(2).max(50),
+const BookScheme = z.object({
+    authorIds: z.array(z.number()).min(1, "Пожалуйста, выберите автора."),
+    title: z.string().min(2, "Название книги не может содержать менее 2 символов.").max(50, "Название книги не может содержать более 50 символов."),
     description: z.string(),
     ISBN: z.string()
 })
 
 export default function Books() {
     const [authors, setAuthors] = useState<Author[]>([]);
+    const [selectedAuthors, setSelectedAuthors] = useState<Author[]>([]);
 
     useEffect(() => {
         axiosInstance.get('/authors').then((response) => {
@@ -38,59 +36,67 @@ export default function Books() {
             });
     }, [])
 
-    const zodForm = useForm<z.infer<typeof BookShema>>({
-        resolver: zodResolver(BookShema),
+    const zodForm = useForm<z.infer<typeof BookScheme>>({
+        resolver: zodResolver(BookScheme),
         defaultValues: {
-            // authorIds: [] - так должно быть, но пока костыль
-            authorId: "",
+            authorIds: [],
             title: "",
             description: "",
             ISBN: ""
         }
     })
 
-    const onSubmit = (formData: z.infer<typeof BookShema>) => {
-        const requestData = {
-            authorIds: [Number(formData.authorId)],
-            title: formData.title,
-            description: formData.description,
-            ISBN: formData.ISBN
-        }
-        console.log(requestData)
+    const handleAddItem = (item: ListItem) => {
+        setSelectedAuthors([...selectedAuthors, {id: item.id, name: item.value}]);
+    };
+
+    const handleRemoveItem = (authorId: number) => {
+        setSelectedAuthors(selectedAuthors.filter((author) => author.id !== authorId));
+    };
+
+    const handleRemoveAllItems = (): void => {
+        setSelectedAuthors([]);
+    };
+
+    useEffect(() => {
+        const authorIds = selectedAuthors.map((author) => author.id);
+        zodForm.setValue("authorIds", authorIds)
+    }, [selectedAuthors, zodForm])
+
+    const onSubmit = (formData: z.infer<typeof BookScheme>) => {
+        const requestData = {...formData}
+        // console.log(requestData)
         axiosInstance.post("/books/add", requestData)
             .then(() => toast("Book created successfully", {
                 action: {
                     label: "Close",
                     onClick: () => console.log("Closed")
-
                 }
             }))
             .catch((error) => console.error(error))
     }
+
     return (
         <main className="flex min-h-screen max-w-3xl flex-col items-left justify-self-auto p-24">
             <Form {...zodForm}>
                 <form onSubmit={zodForm.handleSubmit(onSubmit)} className="space-y-8">
                     <FormField
                         control={zodForm.control}
-                        name="authorId"
-                        render={({field}) => (
-                            <FormItem>
+                        name="authorIds"
+                        render={() => (
+                            <FormItem className="flex flex-col">
                                 <FormLabel>Автор</FormLabel>
-                                <Select onValueChange={field.onChange}>
-                                    <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Выберите автора"/>
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                        {authors.map((author) => (
-                                            <SelectItem key={author.id} value={author.id.toString()}>
-                                                {author.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                                <FormControl>
+                                    <DropdownCombobox
+                                        items={(authors.map((author) => ({id: author.id, value: author.name})))}
+                                        menuSubTriggerText="Выбрать автора"
+                                        searchPlaceholder="Поиск автора..."
+                                        inputText="Добавьте автора"
+                                        onAddItem={handleAddItem}
+                                        onRemoveItem={handleRemoveItem}
+                                        onRemoveAllItems={handleRemoveAllItems}
+                                    />
+                                </FormControl>
                                 <FormDescription>
                                     Выберите автора для книги
                                 </FormDescription>
