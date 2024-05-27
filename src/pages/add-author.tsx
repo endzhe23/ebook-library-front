@@ -19,7 +19,7 @@ type Book = {
 
 const AuthorScheme = z.object({
     name: z.string().min(2, "Название автора не может содержать менее 2 символов.").max(50, "Название автора не может содержать более 50 символов."),
-    bookIds: z.array(z.number()).min(1, "Пожалуйста, выберите книгу.")
+    bookIds: z.array(z.number())
 })
 
 export default function Authors() {
