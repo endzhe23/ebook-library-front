@@ -92,6 +92,7 @@ export default function Books() {
                                         menuSubTriggerText="Выбрать автора"
                                         searchPlaceholder="Поиск автора..."
                                         inputText="Добавьте автора"
+                                        notFoundText="Автор не найден."
                                         onAddItem={handleAddItem}
                                         onRemoveItem={handleRemoveItem}
                                         onRemoveAllItems={handleRemoveAllItems}

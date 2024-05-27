@@ -31,6 +31,7 @@ type DropdownComboboxProps<T extends ListItem> = {
     menuSubTriggerText?: string
     searchPlaceholder?: string
     inputText?: string
+    notFoundText?: string
 };
 
 export const DropdownCombobox = <T extends ListItem>({
@@ -38,6 +39,7 @@ export const DropdownCombobox = <T extends ListItem>({
                                                          menuSubTriggerText = "Выбрать пункт",
                                                          searchPlaceholder = "Filter label...",
                                                          inputText = "Добавьте пункты или элементы",
+                                                         notFoundText = "Пункт не найден.",
                                                          onAddItem, onRemoveItem, onRemoveAllItems,
                                                      }: DropdownComboboxProps<T>) => {
     const [selectedItems, setSelectedItems] = useState<T[]>([]);
@@ -102,7 +104,7 @@ export const DropdownCombobox = <T extends ListItem>({
                                 <Command>
                                     <CommandInput placeholder={searchPlaceholder} autoFocus={true}/>
                                     <CommandList>
-                                        <CommandEmpty>Пункт не найден.</CommandEmpty>
+                                        <CommandEmpty>{notFoundText}</CommandEmpty>
                                         <CommandList>
                                             {items.map((item) => (
                                                 <CommandItem
