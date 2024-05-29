@@ -32,3 +32,14 @@ export const getAuthorById = (id: number, callback: (author: Author) => void): v
             console.error('Error fetching posts:', error);
         });
 }
+
+export const deleteAuthor = (id: number) => {
+    axiosInstance.delete(`/authors/delete/${id}`)
+        .then(() => toast("Author deleted successfully", {
+            action: {
+                label: "Close",
+                onClick: () => console.log("Closed")
+            }
+        }))
+        .catch((error) => console.error(error))
+}
