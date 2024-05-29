@@ -7,14 +7,11 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {Input} from "@/components/ui/input";
 import React, {useEffect, useState} from "react";
 import {Button} from "@/components/ui/button";
-import {axiosInstance} from "@/lib/axios";
-import {toast, Toaster} from "sonner";
+import {Toaster} from "sonner";
 import {DropdownCombobox, ListItem} from "@/components/ui/dropdown-combobox";
-
-type Author = {
-    id: number,
-    name: string
-}
+import {Author} from "@/types/intex";
+import {createBook} from "@/helpers/book-api";
+import {getAuthors} from "@/helpers/author-api";
 
 const BookScheme = z.object({
     authorIds: z.array(z.number()).min(1, "Пожалуйста, выберите автора."),
@@ -28,12 +25,9 @@ export default function Books() {
     const [selectedAuthors, setSelectedAuthors] = useState<Author[]>([]);
 
     useEffect(() => {
-        axiosInstance.get('/authors').then((response) => {
-            setAuthors(response.data);
+        getAuthors((authors) => {
+            setAuthors(authors);
         })
-            .catch((error) => {
-                console.error('Error fetching posts:', error);
-            });
     }, [])
 
     const zodForm = useForm<z.infer<typeof BookScheme>>({
@@ -66,14 +60,7 @@ export default function Books() {
     const onSubmit = (formData: z.infer<typeof BookScheme>) => {
         const requestData = {...formData}
         // console.log(requestData)
-        axiosInstance.post("/books/add", requestData)
-            .then(() => toast("Book created successfully", {
-                action: {
-                    label: "Close",
-                    onClick: () => console.log("Closed")
-                }
-            }))
-            .catch((error) => console.error(error))
+        createBook(requestData)
     }
 
     return (

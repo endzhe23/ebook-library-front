@@ -1,30 +1,15 @@
 "use client";
 import {useEffect, useState} from "react";
-import {axiosInstance} from "@/lib/axios";
+import {getBooks} from "@/helpers/book-api";
+import {Book} from "@/types/intex";
 
-type Author = {
-    id: number,
-    name: string;
-}
-
-type Book = {
-    id: string,
-    authors: Author[];
-    title: string;
-    description: string;
-    ISBN: string;
-};
-
-export default function Books() {
+export default function Page() {
     const [books, setBooks] = useState<Book[]>([]);
 
     useEffect(() => {
-        axiosInstance.get('/books').then((response) => {
-            setBooks(response.data);
+        getBooks((books) => {
+            setBooks(books)
         })
-            .catch((error) => {
-                console.error('Error fetching posts:', error);
-            });
     }, [])
 
     return (
@@ -34,7 +19,7 @@ export default function Books() {
                     <li>Название книги:{book.title}</li>
                     <li>Описание книги: {book.description}</li>
                     <li>ISBN книги: {book.ISBN}</li>
-                    <li>Авторы книги: {book.authors.map((author) => (<ul key={author.id}>
+                    <li>Авторы книги: {book.authors?.map((author) => (<ul key={author.id}>
                         <li>{author.name}</li>
                     </ul>))}</li>
                 </ul>

@@ -7,15 +7,11 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {Input} from "@/components/ui/input";
 import React, {useEffect, useState} from "react";
 import {Button} from "@/components/ui/button";
-import {axiosInstance} from "@/lib/axios";
-import {toast} from "sonner";
 import {Toaster} from "@/components/ui/sonner";
 import {DropdownCombobox, ListItem} from "@/components/ui/dropdown-combobox";
-
-type Book = {
-    id: number,
-    title: string
-}
+import {createAuthor} from "@/helpers/author-api";
+import {getBooks} from "@/helpers/book-api";
+import {Book} from "@/types/intex";
 
 const AuthorScheme = z.object({
     name: z.string().min(2, "Название автора не может содержать менее 2 символов.").max(50, "Название автора не может содержать более 50 символов."),
@@ -27,14 +23,10 @@ export default function Authors() {
     const [selectedBooks, setSelectedBooks] = useState<Book[]>([]);
 
     useEffect(() => {
-        axiosInstance.get('/books').then((response) => {
-            setBooks(response.data);
+        getBooks((books) => {
+            setBooks(books)
         })
-            .catch((error) => {
-                console.error('Error fetching posts:', error);
-            });
     }, [])
-
 
     const zodForm = useForm<z.infer<typeof AuthorScheme>>({
         resolver: zodResolver(AuthorScheme),
@@ -64,14 +56,7 @@ export default function Authors() {
     const onSubmit = (formData: z.infer<typeof AuthorScheme>) => {
         const requestData = {...formData}
         console.log(formData)
-        axiosInstance.post("/authors/add", requestData)
-            .then(() => toast("Author created successfully", {
-                action: {
-                    label: "Close",
-                    onClick: () => console.log("Closed")
-                }
-            }))
-            .catch((error) => console.error(error))
+        createAuthor(requestData)
     }
     return (
         <main className="flex min-h-screen max-w-3xl flex-col items-left justify-self-auto p-24">

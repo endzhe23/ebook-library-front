@@ -7,12 +7,12 @@ export default function Home() {
     const pathname = usePathname()
     return (
         <main className="flex min-h-screen flex-col items-left justify-normal p-24">
-            <Link className={`link ${pathname === '/books' ? 'active' : ''}`} href="/books">
+            <Link className={`link ${pathname === '/books' ? 'active' : ''}`} href="/src/app/books/page">
                 Books
             </Link>
             <Link
                 className={`link ${pathname === '/authors' ? 'active' : ''}`}
-                href="/authors"
+                href="/authors/page"
             >
                 Authors
             </Link>
