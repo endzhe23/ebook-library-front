@@ -20,7 +20,7 @@ export default function Page({params}: PageProps) {
         getAuthorById(authorId, (author) => {
             setAuthor(author);
         })
-    }, [])
+    }, [authorId])
 
     return (
         <main className="flex min-h-screen flex-col items-left justify-between p-24">
