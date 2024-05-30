@@ -35,3 +35,14 @@ export const getBookById = (id: number, callback: (book: Book) => void): void =>
             console.error('Error fetching posts:', error);
         });
 }
+
+export const deleteBook = (id: number) => {
+    axiosInstance.delete(`/books/delete/${id}`)
+        .then(() => toast("Book deleted successfully", {
+            action: {
+                label: "Close",
+                onClick: () => console.log("Closed")
+            }
+        }))
+        .catch((error) => console.error(error))
+}

@@ -1,7 +1,9 @@
 "use client";
-import {useEffect, useState} from "react";
-import {getBooks} from "@/helpers/book-api";
+import React, { MouseEvent, useEffect, useState} from "react";
+import {deleteBook, getBooks} from "@/helpers/book-api";
 import {Book} from "@/types/intex";
+import {Button} from "@/components/ui/button";
+import {Toaster} from "@/components/ui/sonner";
 
 export default function Page() {
     const [books, setBooks] = useState<Book[]>([]);
@@ -11,6 +13,12 @@ export default function Page() {
             setBooks(books)
         })
     }, [])
+
+    const handleDelete = (event: MouseEvent<HTMLElement>)  => {
+        const bookId = Number(event.currentTarget.id)
+        setBooks(books.filter((book) => book.id !== bookId))
+        deleteBook(bookId)
+    }
 
     return (
         <main className="flex min-h-screen flex-col items-left justify-between p-24">
@@ -22,8 +30,10 @@ export default function Page() {
                     <li>Авторы книги: {book.authors?.map((author) => (<ul key={author.id}>
                         <li>{author.name}</li>
                     </ul>))}</li>
+                    <Button id={book.id.toString()} onClick={handleDelete}>Удалить книгу</Button>
                 </ul>
             ))}
+            <Toaster/>
         </main>
     );
 }
