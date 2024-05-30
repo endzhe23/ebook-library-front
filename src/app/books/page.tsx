@@ -1,5 +1,5 @@
 "use client";
-import React, { MouseEvent, useEffect, useState} from "react";
+import React, {MouseEvent, useEffect, useState} from "react";
 import {deleteBook, getBooks} from "@/helpers/book-api";
 import {Book} from "@/types/intex";
 import {Button} from "@/components/ui/button";
@@ -14,7 +14,7 @@ export default function Page() {
         })
     }, [])
 
-    const handleDelete = (event: MouseEvent<HTMLElement>)  => {
+    const handleDelete = (event: MouseEvent<HTMLElement>) => {
         const bookId = Number(event.currentTarget.id)
         setBooks(books.filter((book) => book.id !== bookId))
         deleteBook(bookId)

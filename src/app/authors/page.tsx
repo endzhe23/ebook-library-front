@@ -1,5 +1,5 @@
 "use client";
-import React, { MouseEvent, useEffect, useState} from "react";
+import React, {MouseEvent, useEffect, useState} from "react";
 import {Author} from "@/types/intex";
 import {deleteAuthor, getAuthors} from "@/helpers/author-api";
 import Link from "next/link";
@@ -15,7 +15,7 @@ export default function Page() {
         })
     }, [])
 
-    const handleDelete = (event: MouseEvent<HTMLElement>)  => {
+    const handleDelete = (event: MouseEvent<HTMLElement>) => {
         const authorId = Number(event.currentTarget.id)
         setAuthors(authors.filter((author) => author.id !== authorId))
         deleteAuthor(authorId)
