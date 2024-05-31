@@ -1,18 +1,25 @@
 "use client";
 import React, {MouseEvent, useEffect, useState} from "react";
-import {Author} from "@/types/intex";
+import {Author} from "@/types";
 import {deleteAuthor, getAuthors} from "@/helpers/author-api";
 import Link from "next/link";
 import {Button} from "@/components/ui/button";
 import {Toaster} from "@/components/ui/sonner";
 
 export default function Page() {
-    const [authors, setAuthors] = useState<Author[]>([]);
+    const [authors, setAuthors] = useState<Author[]>([])
 
     useEffect(() => {
-        getAuthors((authors) => {
-            setAuthors(authors);
-        })
+        async function fetchData() {
+            try {
+                const allAuthors = await getAuthors();
+                setAuthors(allAuthors);
+            } catch (error) {
+                console.error('Error fetching data:', error)
+            }
+        }
+
+        fetchData()
     }, [])
 
     const handleDelete = (event: MouseEvent<HTMLElement>) => {

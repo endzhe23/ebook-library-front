@@ -1,6 +1,6 @@
 "use client";
 import React, {useEffect, useState} from "react";
-import {Book} from "@/types/intex";
+import {Book} from "@/types";
 import {getBookById} from "@/helpers/book-api";
 import Link from "next/link";
 
@@ -17,9 +17,16 @@ export default function Page({params}: PageProps) {
     const [book, setBook] = useState<Book>();
 
     useEffect(() => {
-        getBookById(bookId, (book) => {
-            setBook(book);
-        })
+        async function fetchData() {
+            try {
+                const bookData = await getBookById(bookId);
+                setBook(bookData);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        fetchData();
     }, [bookId])
 
     return (

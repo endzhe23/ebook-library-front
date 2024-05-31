@@ -1,5 +1,5 @@
 "use client";
-import "../app/globals.css"
+import "../../globals.css"
 import {z} from "zod"
 import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
 import {useForm} from "react-hook-form";
@@ -11,7 +11,7 @@ import {Toaster} from "@/components/ui/sonner";
 import {DropdownCombobox, ListItem} from "@/components/ui/dropdown-combobox";
 import {createAuthor} from "@/helpers/author-api";
 import {getBooks} from "@/helpers/book-api";
-import {Book} from "@/types/intex";
+import {Book} from "@/types";
 
 const AuthorScheme = z.object({
     name: z.string().min(2, "Название автора не может содержать менее 2 символов.").max(50, "Название автора не может содержать более 50 символов."),
@@ -23,9 +23,16 @@ export default function Authors() {
     const [selectedBooks, setSelectedBooks] = useState<Book[]>([]);
 
     useEffect(() => {
-        getBooks((books) => {
-            setBooks(books)
-        })
+        async function fetchData() {
+            try {
+                const allBooks = await getBooks();
+                setBooks(allBooks);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        fetchData()
     }, [])
 
     const zodForm = useForm<z.infer<typeof AuthorScheme>>({
@@ -37,7 +44,7 @@ export default function Authors() {
     })
 
     const handleAddItem = (item: ListItem) => {
-        setSelectedBooks([...selectedBooks, {id: item.id, title: item.value}]);
+        setSelectedBooks([...selectedBooks, {id: item.id, title: item.value, authors: []}]);
     };
 
     const handleRemoveItem = (bookId: number) => {

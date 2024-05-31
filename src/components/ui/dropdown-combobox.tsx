@@ -25,7 +25,7 @@ export type ListItem = {
 
 type DropdownComboboxProps<T extends ListItem> = {
     items: T[];
-    defaultItems: T[];
+    defaultItems?: T[];
     onAddItem: (item: T) => void;
     onRemoveItem: (itemId: number) => void;
     onRemoveAllItems: () => void
@@ -37,14 +37,14 @@ type DropdownComboboxProps<T extends ListItem> = {
 
 export const DropdownCombobox = <T extends ListItem>({
                                                          items,
-                                                         defaultItems,
+                                                         defaultItems = [],
                                                          menuSubTriggerText = "Выбрать пункт",
                                                          searchPlaceholder = "Filter label...",
                                                          inputText = "Добавьте пункты или элементы",
                                                          notFoundText = "Пункт не найден.",
                                                          onAddItem, onRemoveItem, onRemoveAllItems,
                                                      }: DropdownComboboxProps<T>) => {
-    const [selectedItems, setSelectedItems] = useState<T[]>(defaultItems);
+    const [selectedItems, setSelectedItems] = useState<T[]>([...defaultItems]);
     const [open, setOpen] = useState(false);
 
     const handleAddItem = (selectedItem: T): void => {

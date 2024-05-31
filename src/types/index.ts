@@ -1,12 +1,12 @@
 export type Author = {
     id: number,
     name: string;
-    books?: Book[];
+    books: Book[] | [];
 }
 
 export type Book = {
     id: number,
-    authors?: Author[];
+    authors: Author[] | [];
     title: string;
     description?: string;
     ISBN?: string;

@@ -1,7 +1,7 @@
 "use client";
 import React, {MouseEvent, useEffect, useState} from "react";
 import {deleteBook, getBooks} from "@/helpers/book-api";
-import {Book} from "@/types/intex";
+import {Book} from "@/types";
 import {Button} from "@/components/ui/button";
 import {Toaster} from "@/components/ui/sonner";
 import Link from "next/link";
@@ -10,9 +10,16 @@ export default function Page() {
     const [books, setBooks] = useState<Book[]>([]);
 
     useEffect(() => {
-        getBooks((books) => {
-            setBooks(books)
-        })
+        async function fetchData() {
+            try {
+                const allBooks = await getBooks();
+                setBooks(allBooks);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        fetchData().then()
     }, [])
 
     const handleDelete = (event: MouseEvent<HTMLElement>) => {
@@ -31,7 +38,7 @@ export default function Page() {
                     </ul>))}</li>
                     <Button id={book.id.toString()} onClick={handleDelete}>Удалить книгу</Button>
                 </ul>
-                ))}
+            ))}
             <Toaster/>
         </main>
     );

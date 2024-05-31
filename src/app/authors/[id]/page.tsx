@@ -1,6 +1,6 @@
 "use client";
 import {useEffect, useState} from "react";
-import {Author} from "@/types/intex";
+import {Author} from "@/types";
 import {getAuthorById} from "@/helpers/author-api";
 import Link from "next/link";
 
@@ -17,9 +17,16 @@ export default function Page({params}: PageProps) {
     const [author, setAuthor] = useState<Author>();
 
     useEffect(() => {
-        getAuthorById(authorId, (author) => {
-            setAuthor(author);
-        })
+        async function fetchData() {
+            try {
+                const authorData = await getAuthorById(authorId);
+                setAuthor(authorData);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        fetchData();
     }, [authorId])
 
     return (

@@ -11,7 +11,7 @@ import {Toaster} from "@/components/ui/sonner";
 import {DropdownCombobox, ListItem} from "@/components/ui/dropdown-combobox";
 import {getAuthorById} from "@/helpers/author-api";
 import {getBooks} from "@/helpers/book-api";
-import {Author, Book} from "@/types/intex";
+import {Author, Book} from "@/types";
 
 const AuthorScheme = z.object({
     name: z.string().min(2, "Название автора не может содержать менее 2 символов.").max(50, "Название автора не может содержать более 50 символов."),
@@ -29,34 +29,48 @@ type PageProps = {
 export default function Authors({params}: PageProps) {
     const authorId: number = params.id
     const [author, setAuthor] = useState<Author>();
-    const [defaultBooks, setDefaultBooks] = useState<Book[]>([]);
     const [books, setBooks] = useState<Book[]>([]);
     const [selectedBooks, setSelectedBooks] = useState<Book[]>([]);
-
-    useEffect(() => {
-        getAuthorById(authorId, (author) => {
-            setAuthor(author)
-            // setDefaultBooks(author?.books && author?.books)
-        })
-        getBooks((books) => {
-            setBooks(books)
-        })
-    }, [authorId])
 
     const zodForm = useForm<z.infer<typeof AuthorScheme>>({
         resolver: zodResolver(AuthorScheme),
         defaultValues: {
-            name: author?.name,
-            bookIds: author?.books?.map(book => book.id)
+            name: "",
+            bookIds: []
         }
     })
 
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const authorData = await getAuthorById(authorId);
+                setAuthor(authorData);
+                setSelectedBooks(authorData.books);
+
+                const allBooks = await getBooks();
+                setBooks(allBooks);
+
+                zodForm.reset({
+                    name: authorData.name,
+                    bookIds: authorData.books.map(book => book.id)
+                });
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        fetchData();
+    }, [authorId, zodForm]);
+
     const handleAddItem = (item: ListItem) => {
-        setSelectedBooks([...selectedBooks, {id: item.id, title: item.value}]);
+        const book = books.find(book => book.id === item.id);
+        if (book) {
+            setSelectedBooks(prev => [...prev, book]);
+        }
     };
 
     const handleRemoveItem = (bookId: number) => {
-        setSelectedBooks(selectedBooks.filter((book) => book.id !== bookId));
+        setSelectedBooks(prev => prev.filter((book) => book.id !== bookId));
     };
 
     const handleRemoveAllItems = (): void => {
@@ -69,10 +83,14 @@ export default function Authors({params}: PageProps) {
     }, [selectedBooks, zodForm])
 
     const onSubmit = (formData: z.infer<typeof AuthorScheme>) => {
-        const requestData = {...formData}
         console.log(formData)
-        // createAuthor(requestData)
+        // updateAuthor(formData)
     }
+
+    if (!author) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <main className="flex min-h-screen max-w-3xl flex-col items-left justify-self-auto p-24">
             <Form {...zodForm}>
@@ -81,7 +99,7 @@ export default function Authors({params}: PageProps) {
                         <FormItem>
                             <FormLabel>Имя автора</FormLabel>
                             <FormControl>
-                                <Input defaultValue={author?.name} placeholder="Напишите здесь имя автора" {...field}/>
+                                <Input placeholder="Напишите здесь имя автора" {...field}/>
                             </FormControl>
                             <FormDescription>
                                 Имя автора должно быть от 2 до 50 символов
@@ -98,7 +116,10 @@ export default function Authors({params}: PageProps) {
                                 <FormControl>
                                     <DropdownCombobox
                                         items={(books.map((book) => ({id: book.id, value: book.title})))}
-                                        defaultItems={(defaultBooks.map((book) => ({id: book.id, value: book.title})))}
+                                        defaultItems={(selectedBooks.map((book) => ({
+                                            id: book.id,
+                                            value: book.title
+                                        })))}
                                         menuSubTriggerText="Выбрать книгу"
                                         searchPlaceholder="Поиск по книгам..."
                                         inputText="Добавьте книгу"
