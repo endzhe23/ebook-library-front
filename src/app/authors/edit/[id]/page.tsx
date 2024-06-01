@@ -136,7 +136,7 @@ export default function Authors({params}: PageProps) {
                             </FormItem>
                         )}
                     />
-                    <Button type="submit">Создать автора</Button>
+                    <Button type="submit">Обновить</Button>
                 </form>
             </Form>
             <Toaster/>

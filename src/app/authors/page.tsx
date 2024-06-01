@@ -36,6 +36,9 @@ export default function Page() {
                     <li>Книги автора: {author.books?.map((book) => (<ul key={book.id}>
                         <li>{book.title}</li>
                     </ul>))}</li>
+                    <Link href={`/authors/edit/${author.id}`}>
+                        <Button>Обновить данные</Button>
+                    </Link>
                     <Button id={author.id.toString()} onClick={handleDelete}>Удалить автора</Button>
                 </ul>
             ))}

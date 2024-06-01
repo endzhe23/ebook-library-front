@@ -10,11 +10,19 @@ export const createAuthor = (requestData: { name: string, bookIds: number[] }) =
                 onClick: () => console.log("Closed")
             }
         }))
-        .catch((error) => console.error(error))
+        .catch((error) => {
+            toast.error("Error creating author: " + error.message, {
+                action: {
+                    label: "Close",
+                    onClick: () => console.log("Closed")
+                }
+            });
+            console.error(error);
+        });
 }
 
 export const updateAuthor = (id: number, requestData: { name?: string, bookIds?: number[] }) => {
-    axiosInstance.post(`/authors/edit/${id}`, requestData)
+    axiosInstance.put(`/authors/edit/${id}`, requestData)
         .then(() => toast("Author updated successfully", {
             action: {
                 label: "Close",
