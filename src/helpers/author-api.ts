@@ -13,6 +13,17 @@ export const createAuthor = (requestData: { name: string, bookIds: number[] }) =
         .catch((error) => console.error(error))
 }
 
+export const updateAuthor = (id: number, requestData: { name?: string, bookIds?: number[] }) => {
+    axiosInstance.post(`/authors/edit/${id}`, requestData)
+        .then(() => toast("Author updated successfully", {
+            action: {
+                label: "Close",
+                onClick: () => console.log("Closed")
+            }
+        }))
+        .catch((error) => console.error(error))
+}
+
 export const getAuthors = async (): Promise<Author[]> => {
     try {
         const response = await axiosInstance.get('/authors');

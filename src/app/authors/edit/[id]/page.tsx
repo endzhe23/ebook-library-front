@@ -9,13 +9,13 @@ import React, {useEffect, useState} from "react";
 import {Button} from "@/components/ui/button";
 import {Toaster} from "@/components/ui/sonner";
 import {DropdownCombobox, ListItem} from "@/components/ui/dropdown-combobox";
-import {getAuthorById} from "@/helpers/author-api";
+import {getAuthorById, updateAuthor} from "@/helpers/author-api";
 import {getBooks} from "@/helpers/book-api";
 import {Author, Book} from "@/types";
 
 const AuthorScheme = z.object({
-    name: z.string().min(2, "Название автора не может содержать менее 2 символов.").max(50, "Название автора не может содержать более 50 символов."),
-    bookIds: z.array(z.number())
+    name: z.optional(z.string().min(2, "Название автора не может содержать менее 2 символов.").max(50, "Название автора не может содержать более 50 символов.")),
+    bookIds: z.optional(z.array(z.number()))
 })
 
 type PageParams = {
@@ -84,7 +84,7 @@ export default function Authors({params}: PageProps) {
 
     const onSubmit = (formData: z.infer<typeof AuthorScheme>) => {
         console.log(formData)
-        // updateAuthor(formData)
+        updateAuthor(authorId, formData)
     }
 
     if (!author) {
