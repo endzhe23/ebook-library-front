@@ -15,7 +15,39 @@ export const createBook = (requestData: {
                 onClick: () => console.log("Closed")
             }
         }))
-        .catch((error) => console.error(error))
+        .catch((error) => {
+            toast.error("Error creating book: " + error.message, {
+                action: {
+                    label: "Close",
+                    onClick: () => console.log("Closed")
+                }
+            });
+            console.error(error);
+        });
+}
+
+export const updateBook = (id: number, requestData: {
+    title?: string,
+    description?: string,
+    authorIds?: number[],
+    ISBN?: string
+}) => {
+    axiosInstance.put(`/books/edit/${id}`, requestData)
+        .then(() => toast("Book updated successfully", {
+            action: {
+                label: "Close",
+                onClick: () => console.log("Closed")
+            }
+        }))
+        .catch((error) => {
+            toast.error("Error updating book: " + error.message, {
+                action: {
+                    label: "Close",
+                    onClick: () => console.log("Closed")
+                }
+            });
+            console.error(error);
+        })
 }
 
 export const getBooks = async (): Promise<Book[]> => {

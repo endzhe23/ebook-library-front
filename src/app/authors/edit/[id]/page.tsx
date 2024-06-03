@@ -12,6 +12,7 @@ import {DropdownCombobox, ListItem} from "@/components/ui/dropdown-combobox";
 import {getAuthorById, updateAuthor} from "@/helpers/author-api";
 import {getBooks} from "@/helpers/book-api";
 import {Author, Book} from "@/types";
+import {toast} from "sonner";
 
 const AuthorScheme = z.object({
     name: z.optional(z.string().min(2, "Название автора не может содержать менее 2 символов.").max(50, "Название автора не может содержать более 50 символов.")),
@@ -55,7 +56,12 @@ export default function Authors({params}: PageProps) {
                     bookIds: authorData.books.map(book => book.id)
                 });
             } catch (error) {
-                console.error('Error fetching data:', error);
+                toast.error("Error fetching data: " + error, {
+                    action: {
+                        label: "Close",
+                        onClick: () => console.log("Closed")
+                    }
+                });
             }
         }
 
@@ -83,7 +89,7 @@ export default function Authors({params}: PageProps) {
     }, [selectedBooks, zodForm])
 
     const onSubmit = (formData: z.infer<typeof AuthorScheme>) => {
-        console.log(formData)
+        // console.log(formData)
         updateAuthor(authorId, formData)
     }
 

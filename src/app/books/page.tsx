@@ -33,9 +33,15 @@ export default function Page() {
             {books?.map((book) => (
                 <ul key={book.id}>
                     <li>Название книги: <Link href={`/books/${book.id}`}>{book.title}</Link></li>
-                    <li>Авторы книги: {book.authors?.map((author) => (<ul key={author.id}>
-                        <li>{author.name}</li>
-                    </ul>))}</li>
+                    <li>Авторы книги:</li>
+                    {book.authors?.map((author) => (
+                        <ul key={`/authors/${author.id}`}>
+                            <li><Link href={`/authors/${author.id}`}>{author.name}</Link></li>
+                        </ul>
+                    ))}
+                    <Link href={`/books/edit/${book.id}`}>
+                        <Button>Обновить данные</Button>
+                    </Link>
                     <Button id={book.id.toString()} onClick={handleDelete}>Удалить книгу</Button>
                 </ul>
             ))}

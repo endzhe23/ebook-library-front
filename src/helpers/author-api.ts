@@ -37,7 +37,13 @@ export const getAuthors = async (): Promise<Author[]> => {
         const response = await axiosInstance.get('/authors');
         return response.data;
     } catch (error) {
-        console.error('Error fetching authors:', error);
+        // console.error('Error fetching authors:', error);
+        toast.error("Error fetching data: " + error, {
+            action: {
+                label: "Close",
+                onClick: () => console.log("Closed")
+            }
+        });
         throw error;
     }
 };

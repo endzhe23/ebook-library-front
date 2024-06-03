@@ -33,13 +33,18 @@ export default function Page() {
             {authors.map((author) => (
                 <ul key={author.id}>
                     <li>Имя автора: <Link href={`/authors/${author.id}`}>{author.name}</Link></li>
-                    <li>Книги автора: {author.books?.map((book) => (<ul key={book.id}>
-                        <li>{book.title}</li>
-                    </ul>))}</li>
+                    <li>Книги автора:</li>
+                    {author.books?.map((book) => (
+                        <ul key={`/books/${book.id}`}>
+                            <li><Link href={`/books/${book.id}`}>{book.title}</Link></li>
+                        </ul>
+                    ))}
                     <Link href={`/authors/edit/${author.id}`}>
                         <Button>Обновить данные</Button>
                     </Link>
-                    <Button id={author.id.toString()} onClick={handleDelete}>Удалить автора</Button>
+                    <Link href={`/authors`}>
+                        <Button id={author.id.toString()} onClick={handleDelete}>Удалить автора</Button>
+                    </Link>
                 </ul>
             ))}
             <Toaster/>
