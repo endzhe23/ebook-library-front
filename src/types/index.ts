@@ -4,6 +4,12 @@ export type Author = {
     books: Book[] | [];
 }
 
+export type Genre = {
+    id: number,
+    name: string;
+    books: Book[] | [];
+}
+
 export type Book = {
     id: number,
     authors: Author[] | [];

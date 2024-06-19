@@ -6,6 +6,7 @@ export const createBook = (requestData: {
     title: string,
     description: string,
     authorIds: number[],
+    genreIds: number[],
     ISBN: string
 }) => {
     axiosInstance.post("/books/add", requestData)
@@ -30,6 +31,7 @@ export const updateBook = (id: number, requestData: {
     title?: string,
     description?: string,
     authorIds?: number[],
+    genreIds?: number[],
     ISBN?: string
 }) => {
     axiosInstance.put(`/books/edit/${id}`, requestData)

@@ -16,6 +16,12 @@ export default function Home() {
             >
                 Authors
             </Link>
+            <Link
+                className={`link ${pathname === '/genres' ? 'active' : ''}`}
+                href="/genres"
+            >
+                Genres
+            </Link>
         </main>
     );
 }
