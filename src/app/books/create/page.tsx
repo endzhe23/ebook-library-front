@@ -9,12 +9,14 @@ import React, {useEffect, useState} from "react";
 import {Button} from "@/components/ui/button";
 import {Toaster} from "sonner";
 import {DropdownCombobox, ListItem} from "@/components/ui/dropdown-combobox";
-import {Author} from "@/types";
+import {Author, Genre} from "@/types";
 import {createBook} from "@/helpers/book-api";
 import {getAuthors} from "@/helpers/author-api";
+import {getGenres} from "@/helpers/genre-api";
 
 const BookScheme = z.object({
     authorIds: z.array(z.number()).min(1, "Пожалуйста, выберите автора."),
+    genreIds: z.array(z.number()).min(1, "Пожалуйста, выберите жанр."),
     title: z.string().min(2, "Название книги не может содержать менее 2 символов.").max(50, "Название книги не может содержать более 50 символов."),
     description: z.string(),
     ISBN: z.string()
@@ -22,13 +24,17 @@ const BookScheme = z.object({
 
 export default function Books() {
     const [authors, setAuthors] = useState<Author[]>([]);
+    const [genres, setGenres] = useState<Genre[]>([]);
     const [selectedAuthors, setSelectedAuthors] = useState<Author[]>([]);
+    const [selectedGenres, setSelectedGenres] = useState<Genre[]>([]);
 
     useEffect(() => {
         async function fetchData() {
             try {
                 const allAuthors = await getAuthors();
+                const allGenres = await getGenres();
                 setAuthors(allAuthors);
+                setGenres(allGenres)
             } catch (error) {
                 console.error('Error fetching data:', error)
             }
@@ -41,28 +47,44 @@ export default function Books() {
         resolver: zodResolver(BookScheme),
         defaultValues: {
             authorIds: [],
+            genreIds: [],
             title: "",
             description: "",
             ISBN: ""
         }
     })
 
-    const handleAddItem = (item: ListItem) => {
+    const handleAddAuthor = (item: ListItem) => {
         setSelectedAuthors([...selectedAuthors, {id: item.id, name: item.value, books: []}]);
     };
 
-    const handleRemoveItem = (authorId: number) => {
+    const handleRemoveAuthor = (authorId: number) => {
         setSelectedAuthors(selectedAuthors.filter((author) => author.id !== authorId));
     };
 
-    const handleRemoveAllItems = (): void => {
+    const handleRemoveAllAuthors = (): void => {
         setSelectedAuthors([]);
     };
 
+    const handleAddGenre = (item: ListItem) => {
+        setSelectedGenres([...selectedGenres, {id: item.id, name: item.value, books: []}]);
+    };
+
+    const handleRemoveGenre = (genreId: number) => {
+        setSelectedGenres(selectedGenres.filter((genre) => genre.id !== genreId));
+    };
+
+    const handleRemoveAllGenres = (): void => {
+        setSelectedGenres([]);
+    };
+
+
     useEffect(() => {
-        const authorIds = selectedAuthors.map((author) => author.id);
-        zodForm.setValue("authorIds", authorIds)
-    }, [selectedAuthors, zodForm])
+        const authorIds = selectedAuthors.map((author) => author.id)
+        const genreIds = selectedGenres.map((genre) => genre.id)
+        zodForm.setValue("genreIds", authorIds)
+        zodForm.setValue("authorIds", genreIds)
+    }, [selectedAuthors, selectedGenres, zodForm])
 
     const onSubmit = (formData: z.infer<typeof BookScheme>) => {
         const requestData = {...formData}
@@ -87,13 +109,34 @@ export default function Books() {
                                         searchPlaceholder="Поиск автора..."
                                         inputText="Добавьте автора"
                                         notFoundText="Автор не найден."
-                                        onAddItem={handleAddItem}
-                                        onRemoveItem={handleRemoveItem}
-                                        onRemoveAllItems={handleRemoveAllItems}
+                                        onAddItem={handleAddAuthor}
+                                        onRemoveItem={handleRemoveAuthor}
+                                        onRemoveAllItems={handleRemoveAllAuthors}
                                     />
                                 </FormControl>
+                                <FormField
+                                    control={zodForm.control}
+                                    name="authorIds"
+                                    render={() => (
+                                        <FormItem className="flex flex-col">
+                                            <FormLabel>Жанр</FormLabel>
+                                            <FormControl>
+                                                <DropdownCombobox
+                                                    items={(genres.map((genre) => ({id: genre.id, value: genre.name})))}
+                                                    menuSubTriggerText="Выбрать жанр"
+                                                    searchPlaceholder="Поиск жанра..."
+                                                    inputText="Добавьте жанр"
+                                                    notFoundText="Жанр не найден."
+                                                    onAddItem={handleAddGenre}
+                                                    onRemoveItem={handleRemoveGenre}
+                                                    onRemoveAllItems={handleRemoveAllGenres}
+                                                />
+                                            </FormControl>
+                                        </FormItem>
+                                    )}
+                                />
                                 <FormDescription>
-                                    Выберите автора для книги
+                                    Выберите жанр для книги
                                 </FormDescription>
                                 <FormMessage/>
                             </FormItem>

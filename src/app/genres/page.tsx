@@ -32,8 +32,8 @@ export default function Page() {
         <main className="flex min-h-screen flex-col items-left justify-self-auto p-24">
             {genres.map((genre) => (
                 <ul key={genre.id}>
-                    <li>Имя автора: <Link href={`/authors/${genre.id}`}>{genre.name}</Link></li>
-                    <li>Книги автора:</li>
+                    <li>Название жанра: <Link href={`/genres/${genre.id}`}>{genre.name}</Link></li>
+                    <li>Книги жанра:</li>
                     {genre.books?.map((book) => (
                         <ul key={`/books/${book.id}`}>
                             <li><Link href={`/books/${book.id}`}>{book.title}</Link></li>
@@ -41,9 +41,6 @@ export default function Page() {
                     ))}
                     <Link href={`/genres/edit/${genre.id}`}>
                         <Button>Обновить данные</Button>
-                    </Link>
-                    <Link href={`/genres`}>
-                        <Button id={genre.id.toString()} onClick={handleDelete}>Удалить жанр</Button>
                     </Link>
                 </ul>
             ))}

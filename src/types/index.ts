@@ -13,6 +13,7 @@ export type Genre = {
 export type Book = {
     id: number,
     authors: Author[] | [];
+    genres: Genre[] | [];
     title: string;
     description?: string;
     ISBN?: string;

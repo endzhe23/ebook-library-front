@@ -9,12 +9,14 @@ import React, {useEffect, useState} from "react";
 import {Button} from "@/components/ui/button";
 import {Toaster} from "sonner";
 import {DropdownCombobox, ListItem} from "@/components/ui/dropdown-combobox";
-import {Author, Book} from "@/types";
+import {Author, Book, Genre} from "@/types";
 import {getBookById, updateBook} from "@/helpers/book-api";
 import {getAuthors} from "@/helpers/author-api";
+import {getGenres} from "@/helpers/genre-api";
 
 const BookScheme = z.object({
     authorIds: z.optional(z.array(z.number()).min(1, "Пожалуйста, выберите автора.")),
+    genreIds: z.optional(z.array(z.number()).min(1, "Пожалуйста, выберите жанр.")),
     title: z.optional(z.string().min(2, "Название книги не может содержать менее 2 символов.").max(50, "Название книги не может содержать более 50 символов.")),
     description: z.optional(z.string()),
     ISBN: z.optional(z.string())
@@ -32,13 +34,16 @@ type PageProps = {
 export default function Books({params}: PageProps) {
     const bookId: number = params.id
     const [book, setBook] = useState<Book>();
-    const [authors, setAuthors] = useState<Author[]>([]);
+    const [authors, setAuthors] = useState<Author[]>([])
+    const [genres, setGenres] = useState<Genre[]>([])
     const [selectedAuthors, setSelectedAuthors] = useState<Author[]>([]);
+    const [selectedGenres, setSelectedGenres] = useState<Genre[]>([]);
 
     const zodForm = useForm<z.infer<typeof BookScheme>>({
         resolver: zodResolver(BookScheme),
         defaultValues: {
             authorIds: [],
+            genreIds: [],
             title: "",
             description: "",
             ISBN: ""
@@ -51,12 +56,17 @@ export default function Books({params}: PageProps) {
                 const bookData = await getBookById(bookId);
                 setBook(bookData);
                 setSelectedAuthors(bookData.authors);
+                setSelectedGenres(bookData.genres);
 
                 const allAuthors = await getAuthors();
                 setAuthors(allAuthors);
 
+                const allGenres = await getGenres();
+                setGenres(allGenres);
+
                 zodForm.reset({
                     authorIds: bookData.authors.map(author => author.id),
+                    genreIds: bookData.genres.map(genre => genre.id),
                     title: bookData.title,
                     description: bookData.description,
                     ISBN: bookData.ISBN
@@ -69,20 +79,60 @@ export default function Books({params}: PageProps) {
         fetchData()
     }, [bookId, zodForm])
 
+    // useEffect(() => {
+    //     async function fetchData() {
+    //         try {
+    //             const bookData = await getBookById(bookId);
+    //             setBook(bookData);
+    //             setSelectedGenres(bookData.genres);
+    //
+    //             const allGenres = await getGenres();
+    //             setGenres(allGenres);
+    //
+    //             zodForm.reset({
+    //                 authorIds: bookData.authors.map(author => author.id),
+    //                 title: bookData.title,
+    //                 description: bookData.description,
+    //                 ISBN: bookData.ISBN
+    //             });
+    //         } catch (error) {
+    //             console.error('Error fetching data:', error)
+    //         }
+    //     }
+    //
+    //     fetchData()
+    // }, [bookId, zodForm])
 
-    const handleAddItem = (item: ListItem) => {
+
+    const handleAddAuthor = (item: ListItem) => {
         const author = authors.find(author => author.id === item.id);
         if (author) {
             setSelectedAuthors(prev => [...prev, author]);
         }
     };
 
-    const handleRemoveItem = (authorId: number) => {
+    const handleRemoveAuthor = (authorId: number) => {
         setSelectedAuthors(prev => prev.filter((author) => author.id !== authorId));
     };
 
-    const handleRemoveAllItems = (): void => {
+    const handleRemoveAllAuthors = (): void => {
         setSelectedAuthors([]);
+    };
+
+
+    const handleAddGenre = (item: ListItem) => {
+        const genre = genres.find(genre => genre.id === item.id);
+        if (genre) {
+            setSelectedGenres(prev => [...prev, genre]);
+        }
+    };
+
+    const handleRemoveGenre = (genreId: number) => {
+        setSelectedGenres(prev => prev.filter((genre) => genre.id !== genreId));
+    };
+
+    const handleRemoveAllGenres = (): void => {
+        setSelectedGenres([]);
     };
 
     useEffect(() => {
@@ -120,9 +170,9 @@ export default function Books({params}: PageProps) {
                                         searchPlaceholder="Поиск автора..."
                                         inputText="Добавьте автора"
                                         notFoundText="Автор не найден."
-                                        onAddItem={handleAddItem}
-                                        onRemoveItem={handleRemoveItem}
-                                        onRemoveAllItems={handleRemoveAllItems}
+                                        onAddItem={handleAddAuthor}
+                                        onRemoveItem={handleRemoveAuthor}
+                                        onRemoveAllItems={handleRemoveAllAuthors}
                                     />
                                 </FormControl>
                                 <FormDescription>
@@ -132,7 +182,37 @@ export default function Books({params}: PageProps) {
                             </FormItem>
                         )}
                     />
-                    <FormField control={zodForm.control} name="title" render={({field}) => (
+
+                    <FormField
+                        control={zodForm.control}
+                        name="genreIds"
+                        render={() => (
+                            <FormItem className="flex flex-col">
+                                <FormLabel>Жанр</FormLabel>
+                                <FormControl>
+                                    <DropdownCombobox
+                                        items={(genres.map((genre) => ({id: genre.id, value: genre.name})))}
+                                        defaultItems={(selectedGenres.map((genre) => ({
+                                            id: genre.id,
+                                            value: genre.name
+                                        })))}
+                                        menuSubTriggerText="Выбрать жанр"
+                                        searchPlaceholder="Поиск жанра..."
+                                        inputText="Добавьте жанр"
+                                        notFoundText="Автор не найден."
+                                        onAddItem={handleAddGenre}
+                                        onRemoveItem={handleRemoveGenre}
+                                        onRemoveAllItems={handleRemoveAllGenres}
+                                    />
+                                </FormControl>
+                                <FormDescription>
+                                    Выберите жанр для книги
+                                </FormDescription>
+                                <FormMessage/>
+                            </FormItem>
+                        )}
+                    />
+                            <FormField control={zodForm.control} name="title" render={({field}) => (
                         <FormItem>
                             <FormLabel>Название книги</FormLabel>
                             <FormControl>
