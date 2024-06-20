@@ -158,7 +158,6 @@ export default function Books({params}: PageProps) {
                             </FormItem>
                         )}
                     />
-
                     <FormField
                         control={zodForm.control}
                         name="genreIds"

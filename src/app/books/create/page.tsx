@@ -114,27 +114,31 @@ export default function Books() {
                                         onRemoveAllItems={handleRemoveAllAuthors}
                                     />
                                 </FormControl>
-                                <FormField
-                                    control={zodForm.control}
-                                    name="authorIds"
-                                    render={() => (
-                                        <FormItem className="flex flex-col">
-                                            <FormLabel>Жанр</FormLabel>
-                                            <FormControl>
-                                                <DropdownCombobox
-                                                    items={(genres.map((genre) => ({id: genre.id, value: genre.name})))}
-                                                    menuSubTriggerText="Выбрать жанр"
-                                                    searchPlaceholder="Поиск жанра..."
-                                                    inputText="Добавьте жанр"
-                                                    notFoundText="Жанр не найден."
-                                                    onAddItem={handleAddGenre}
-                                                    onRemoveItem={handleRemoveGenre}
-                                                    onRemoveAllItems={handleRemoveAllGenres}
-                                                />
-                                            </FormControl>
-                                        </FormItem>
-                                    )}
-                                />
+                                <FormDescription>
+                                    Выберите жанр для книги
+                                </FormDescription>
+                                <FormMessage/>
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={zodForm.control}
+                        name="genreIds"
+                        render={() => (
+                            <FormItem className="flex flex-col">
+                                <FormLabel>Жанр</FormLabel>
+                                <FormControl>
+                                    <DropdownCombobox
+                                        items={(genres.map((genre) => ({id: genre.id, value: genre.name})))}
+                                        menuSubTriggerText="Выбрать жанр"
+                                        searchPlaceholder="Поиск жанра..."
+                                        inputText="Добавьте жанр"
+                                        notFoundText="Жанр не найден."
+                                        onAddItem={handleAddGenre}
+                                        onRemoveItem={handleRemoveGenre}
+                                        onRemoveAllItems={handleRemoveAllGenres}
+                                    />
+                                </FormControl>
                                 <FormDescription>
                                     Выберите жанр для книги
                                 </FormDescription>
@@ -177,5 +181,6 @@ export default function Books() {
             </Form>
             <Toaster/>
         </main>
-    );
+    )
+        ;
 }
