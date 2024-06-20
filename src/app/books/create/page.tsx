@@ -82,8 +82,8 @@ export default function Books() {
     useEffect(() => {
         const authorIds = selectedAuthors.map((author) => author.id)
         const genreIds = selectedGenres.map((genre) => genre.id)
-        zodForm.setValue("genreIds", authorIds)
         zodForm.setValue("authorIds", genreIds)
+        zodForm.setValue("genreIds", authorIds)
     }, [selectedAuthors, selectedGenres, zodForm])
 
     const onSubmit = (formData: z.infer<typeof BookScheme>) => {
