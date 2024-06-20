@@ -115,7 +115,7 @@ export default function Books() {
                                     />
                                 </FormControl>
                                 <FormDescription>
-                                    Выберите жанр для книги
+                                    Выберите автора для книги
                                 </FormDescription>
                                 <FormMessage/>
                             </FormItem>
