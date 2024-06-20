@@ -39,6 +39,11 @@ export default function Page({params}: PageProps) {
                     <Link href={`/authors/${author.id}`}>{author.name}</Link>
                 </ul>
             ))}
+            {book?.genres?.map((genre) => (
+                <ul key={genre.id}>
+                    <Link href={`/genres/${genre.id}`}>{genre.name}</Link>
+                </ul>
+            ))}
         </main>
     );
 }

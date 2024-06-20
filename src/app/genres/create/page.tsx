@@ -44,7 +44,7 @@ export default function Genres() {
     })
 
     const handleAddItem = (item: ListItem) => {
-        setSelectedBooks([...selectedBooks, {id: item.id, title: item.value, authors: []}]);
+        setSelectedBooks([...selectedBooks, {id: item.id, title: item.value, authors: [], genres: []}]);
     };
 
     const handleRemoveItem = (bookId: number) => {

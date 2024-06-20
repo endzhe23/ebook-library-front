@@ -79,30 +79,6 @@ export default function Books({params}: PageProps) {
         fetchData()
     }, [bookId, zodForm])
 
-    // useEffect(() => {
-    //     async function fetchData() {
-    //         try {
-    //             const bookData = await getBookById(bookId);
-    //             setBook(bookData);
-    //             setSelectedGenres(bookData.genres);
-    //
-    //             const allGenres = await getGenres();
-    //             setGenres(allGenres);
-    //
-    //             zodForm.reset({
-    //                 authorIds: bookData.authors.map(author => author.id),
-    //                 title: bookData.title,
-    //                 description: bookData.description,
-    //                 ISBN: bookData.ISBN
-    //             });
-    //         } catch (error) {
-    //             console.error('Error fetching data:', error)
-    //         }
-    //     }
-    //
-    //     fetchData()
-    // }, [bookId, zodForm])
-
 
     const handleAddAuthor = (item: ListItem) => {
         const author = authors.find(author => author.id === item.id);
@@ -199,7 +175,7 @@ export default function Books({params}: PageProps) {
                                         menuSubTriggerText="Выбрать жанр"
                                         searchPlaceholder="Поиск жанра..."
                                         inputText="Добавьте жанр"
-                                        notFoundText="Автор не найден."
+                                        notFoundText="Жанр не найден."
                                         onAddItem={handleAddGenre}
                                         onRemoveItem={handleRemoveGenre}
                                         onRemoveAllItems={handleRemoveAllGenres}
@@ -212,7 +188,7 @@ export default function Books({params}: PageProps) {
                             </FormItem>
                         )}
                     />
-                            <FormField control={zodForm.control} name="title" render={({field}) => (
+                    <FormField control={zodForm.control} name="title" render={({field}) => (
                         <FormItem>
                             <FormLabel>Название книги</FormLabel>
                             <FormControl>

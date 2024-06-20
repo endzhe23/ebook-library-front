@@ -39,6 +39,12 @@ export default function Page() {
                             <li><Link href={`/authors/${author.id}`}>{author.name}</Link></li>
                         </ul>
                     ))}
+                    <li>Жанры книг:</li>
+                    {book.genres?.map((genre) => (
+                        <ul key={`/genres/${genre.id}`}>
+                            <li><Link href={`/genres/${genre.id}`}>{genre.name}</Link></li>
+                        </ul>
+                    ))}
                     <Link href={`/books/edit/${book.id}`}>
                         <Button>Обновить данные</Button>
                     </Link>
